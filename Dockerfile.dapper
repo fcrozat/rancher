@@ -15,8 +15,6 @@ ENV KUSTOMIZE_VERSION v3.10.0
 # kontainer-driver-metadata branch to be set for specific branch other than dev/master, logic at rancher/rancher/pkg/settings/setting.go
 ENV CATTLE_KDM_BRANCH=dev-v2.6
 
-RUN zypper --non-interactive ar -G http://download.opensuse.org/distribution/leap/15.3/repo/oss/ leap_tmp
-
 RUN zypper --non-interactive refresh && zypper update -y && \
     zypper install -y gcc ca-certificates git-core wget curl tar vim less file xz gzip sed unzip iproute2 && \
     rm -f /bin/sh && ln -s /bin/bash /bin/sh
