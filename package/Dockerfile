@@ -1,5 +1,6 @@
-FROM ubuntu:18.04
-RUN apt-get update && apt-get install -y git curl ca-certificates unzip xz-utils && \
+FROM registry.opensuse.org/devel/bci/images/bci/base:latest
+
+RUN zypper update -y && zypper install -y git curl ca-certificates unzip xz gzip sed tar shadow && \
     useradd rancher && \
     mkdir -p /var/lib/rancher/etcd /var/lib/cattle /opt/jail /opt/drivers/management-state/bin && \
     chown -R rancher /var/lib/rancher /var/lib/cattle /usr/local/bin
