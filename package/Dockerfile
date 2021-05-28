@@ -1,4 +1,6 @@
-FROM registry.opensuse.org/devel/bci/images/bci/base:latest
+FROM registry.suse.com/suse/sle15:15.3
+
+RUN zypper ar -f https://updates.suse.com/SUSE/Products/SLE-BCI/15-SP3/x86_64/product SLE-BCI-POOL
 
 RUN zypper update -y && zypper install -y git curl ca-certificates unzip xz gzip sed tar shadow && \
     useradd rancher && \
