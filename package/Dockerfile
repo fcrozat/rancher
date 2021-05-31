@@ -1,6 +1,6 @@
 FROM registry.suse.com/suse/sle15:15.3
 
-RUN zypper ar -f https://updates.suse.com/SUSE/Products/SLE-BCI/15-SP3/x86_64/product SLE-BCI-POOL
+RUN zypper ar -p 100 'https://updates.suse.com/SUSE/Products/SLE-BCI/$releasever_major-SP$releasever_minor/$basearch/product/' SLE_BCI
 
 RUN zypper update -y && zypper install -y git curl ca-certificates unzip xz gzip sed tar shadow && \
     useradd rancher && \
