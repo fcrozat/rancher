@@ -1,4 +1,6 @@
-FROM registry.suse.com/suse/sle15:15.3
+ARG BASE_DISTRIBUTION=ubuntu:20.04
+# FROM arm=armhf/ubuntu:20.04 arm64=arm64v8/ubuntu:20.04
+FROM $BASE_DISTRIBUTION
 
 ARG DAPPER_HOST_ARCH
 ENV HOST_ARCH=${DAPPER_HOST_ARCH} ARCH=${DAPPER_HOST_ARCH}
@@ -15,11 +17,14 @@ ENV KUSTOMIZE_VERSION v3.10.0
 # kontainer-driver-metadata branch to be set for specific branch other than dev/master, logic at rancher/rancher/pkg/settings/setting.go
 ENV CATTLE_KDM_BRANCH=dev-v2.6
 
-RUN zypper ar -p 100 'https://updates.suse.com/SUSE/Products/SLE-BCI/$releasever_major-SP$releasever_minor/$basearch/product/' SLE_BCI
-
-RUN zypper --non-interactive refresh && \
-    zypper install -y gcc glibc-devel-static ca-certificates git-core wget curl tar vim less file xz gzip sed gawk unzip iproute2 && \
-    rm -f /bin/sh && ln -s /bin/bash /bin/sh
+RUN if [ -x /usr/bin/zypper ]; then \
+     zypper ar --refresh --priority 100 'https://updates.suse.com/SUSE/Products/SLE-BCI/$releasever_major-SP$releasever_minor/$basearch/product/' SLE_BCI && \
+     zypper install -y gcc glibc-devel-static ca-certificates git-core wget curl tar vim less file xz gzip sed gawk unzip iproute2 ; \
+    else \
+     apt-get update && \
+     apt-get install -y gcc ca-certificates git wget curl vim less file xz-utils unzip iproute2 && \
+     rm -f /bin/sh && ln -s /bin/bash /bin/sh ; \
+    fi
 
 RUN curl -sLf https://github.com/rancher/machine/releases/download/${CATTLE_MACHINE_VERSION}/rancher-machine-${ARCH}.tar.gz | tar xvzf - -C /usr/bin
 
@@ -86,8 +91,12 @@ RUN wget -O - ${YQ_URL} > /usr/bin/yq && chmod +x /usr/bin/yq
 ENV KUBECTL_URL=https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/${ARCH}/kubectl
 RUN wget -O - ${KUBECTL_URL} > /usr/bin/kubectl && chmod +x /usr/bin/kubectl
 
-RUN zypper refresh && \
-    zypper install -y tox python39 python39-devel libffi-devel libopenssl-devel
+RUN if [ -x /usr/bin/zypper ]; then \
+     zypper install -y tox python39 python39-devel libffi-devel libopenssl-devel ; \
+    else \
+     apt-get update && \
+     apt-get install -y tox python3.8 python3-dev python3.8-dev libffi-dev libssl-dev ;\
+    fi
 
 ENV HELM_HOME /root/.helm
 ENV DAPPER_ENV REPO TAG DRONE_TAG SYSTEM_CHART_DEFAULT_BRANCH

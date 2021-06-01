@@ -1,8 +1,12 @@
-FROM registry.suse.com/suse/sle15:15.3
+ARG BASE_DISTRIBUTION=ubuntu:18.04
+FROM $BASE_DISTRIBUTION
 
-RUN zypper ar -p 100 'https://updates.suse.com/SUSE/Products/SLE-BCI/$releasever_major-SP$releasever_minor/$basearch/product/' SLE_BCI
-
-RUN zypper refresh && zypper install -y git curl ca-certificates unzip xz gzip sed tar shadow && \
+RUN if [ -x /usr/bin/zypper ]; then \
+      zypper ar --refresh --priority 100 'https://updates.suse.com/SUSE/Products/SLE-BCI/$releasever_major-SP$releasever_minor/$basearch/product/' SLE_BCI && \
+      zypper install -y git curl ca-certificates unzip xz gzip sed tar shadow ; \
+    else \
+     apt-get update && apt-get install -y git curl ca-certificates unzip xz-utils ; \
+    fi && \
     useradd rancher && \
     mkdir -p /var/lib/rancher/etcd /var/lib/cattle /opt/jail /opt/drivers/management-state/bin && \
     chown -R rancher /var/lib/rancher /var/lib/cattle /usr/local/bin
