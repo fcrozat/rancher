@@ -2,7 +2,7 @@ FROM registry.suse.com/suse/sle15:15.3
 
 RUN zypper ar -p 100 'https://updates.suse.com/SUSE/Products/SLE-BCI/$releasever_major-SP$releasever_minor/$basearch/product/' SLE_BCI
 
-RUN zypper update -y && zypper install -y git curl ca-certificates unzip xz gzip sed tar shadow && \
+RUN zypper refresh && zypper install -y git curl ca-certificates unzip xz gzip sed tar shadow && \
     useradd rancher && \
     mkdir -p /var/lib/rancher/etcd /var/lib/cattle /opt/jail /opt/drivers/management-state/bin && \
     chown -R rancher /var/lib/rancher /var/lib/cattle /usr/local/bin
