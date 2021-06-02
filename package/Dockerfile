@@ -3,7 +3,7 @@ FROM $BASE_DISTRIBUTION
 
 RUN if [ -x /usr/bin/zypper ]; then \
       zypper ar --refresh --priority 100 'https://updates.suse.com/SUSE/Products/SLE-BCI/$releasever_major-SP$releasever_minor/$basearch/product/' SLE_BCI && \
-      zypper install -y git curl ca-certificates unzip xz gzip sed tar shadow ; \
+      zypper -n install git-core curl ca-certificates unzip xz gzip sed tar shadow ; \
     else \
      apt-get update && apt-get install -y git curl ca-certificates unzip xz-utils ; \
     fi && \
