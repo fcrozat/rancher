@@ -10,7 +10,7 @@ RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
 ENV KUBECTL_VERSION v1.20.7
 RUN if [ -x /usr/bin/zypper ]; then \
      zypper ar --refresh --priority 100 'https://updates.suse.com/SUSE/Products/SLE-BCI/$releasever_major-SP$releasever_minor/$basearch/product/' SLE_BCI && \
-     zypper install -y --no-install-recommends git curl ca-certificates jq iproute2 vim-tiny less bash-completion unzip sysstat acl ssh ; \
+     zypper -n install --no-install-recommends git-core curl ca-certificates jq iproute2 vim-tiny less bash-completion unzip sysstat acl ssh ; \
      SUSE_FRONTEND=zypper clean && rm -rf /tmp/* /var/tmp/*
     else \
      apt-get update && \
